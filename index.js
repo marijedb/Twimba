@@ -1,8 +1,8 @@
 // COMING FEATURES: 
 // reply to a specific tweet
 // save tweets, likes and retweets to local storage
-// delete a tweet
 // like, comment or retweet a comment
+
 
 import {tweetsData} from './data.js'
 import {v4 as uuidv4} from 'https://jspm.dev/uuid';
@@ -27,6 +27,9 @@ document.addEventListener('click', function (e) {
     // checks if clicked object's ID is equal to "tweet-btn"
     else if (e.target.id === 'tweet-btn') {
         handleTweetBtnClick()
+    }
+    else if (e.target.dataset.delete){
+        handleDeleteClick(e.target.dataset.delete)
     }
 })
 
@@ -76,6 +79,7 @@ function handleRetweetClick(tweetId) {
     render()
 }
 
+// This function gets the uuid passed in as parameter from the object of which reply button is clicked. 
 function handleReplyClick(replyId) {
     // This will target the ID belonging to the comments section that is linked to the uuid
     // that is clicked and will toggle the hidden object, making it visible or hide it when clicked. 
@@ -100,13 +104,28 @@ function handleTweetBtnClick() {
             isLiked: false,
             isRetweeted: false,
             // this will generate a random UUID for the new tweet. 
-            uuid: uuidv4()
+            uuid: uuidv4(),
+            deletable: true,
         })
         // This will render the new object to the page. 
         render()
         // This will empty out the textarea field for a new tweet again. 
         tweetInput.value = ''
     }
+
+}
+
+// This function gets the uuid passed in as parameter from the object of which delete button is clicked. 
+function handleDeleteClick(deleteID){
+    // First this will find the index of the object inside tweetsData array that needs to be deleted
+    const indexOfObject = tweetsData.findIndex(function(tweet){
+        return tweet.uuid === deleteID;
+    })
+
+    // this will delete the object from the array, passing in the index of its location
+    tweetsData.splice(indexOfObject, 1)
+    // This will render out the new page without deleted tweet. 
+    render();
 
 }
 
@@ -163,6 +182,18 @@ function getFeedHtml() {
             })
         }
 
+        // Set deleteIcon to empty string for initializing
+        let deleteIcon = "";
+
+        // if deletable key is set to true this block of code will run:
+        // (This string will only be added to feed on own posts)
+        if(tweet.deletable){
+            deleteIcon = `
+            <span class="tweet-detail">
+                <i class="fa-solid fa-trash-can" data-delete="${tweet.uuid}"></i>
+            </span>`
+        }
+
         // this is the main feed variable which will actually end up onto the page. 
         // with each loop it will add another tweet to the feedHtml variable 
         // Each loop it will go through the object and add all necessary keys
@@ -193,6 +224,7 @@ function getFeedHtml() {
                                 ></i>
                                 ${tweet.retweets}
                             </span>
+                            ${deleteIcon}
                         </div>   
                     </div>            
                 </div>
