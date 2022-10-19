@@ -1,11 +1,15 @@
-// COMING FEATURES: 
+// COMING FEATURES/ BUG FIXES: 
 // reply to a specific tweet
-// save tweets, likes and retweets to local storage
+// when liking a post and comments are expanded they need to stay expanded. 
 // like, comment or retweet a comment
-
-
-import {tweetsData} from './data.js'
+import {tweetsData as tweets} from './data.js'
 import {v4 as uuidv4} from 'https://jspm.dev/uuid';
+
+let tweetsData = [...tweets]
+
+if(localStorage.getItem('tweets')){
+    tweetsData = JSON.parse(localStorage.getItem('tweets'))
+}
 
 // Add event listeners towards all clickable objects on the page and add in event as parameter
 document.addEventListener('click', function (e) {
@@ -52,6 +56,9 @@ function handleLikeClick(tweetId) {
     // Here it will switch the object from liked to unliked and vice versa. 
     // this will help with knowing if object is already liked or not on next click
     targetTweetObj.isLiked = !targetTweetObj.isLiked
+
+    saveToStorage()
+
     // This function will exectute the render function which will render the updated info to page. 
     render()
 }
@@ -75,6 +82,9 @@ function handleRetweetClick(tweetId) {
     // Here it will switch the object from retweeted to not retweeted and vice versa. 
     // this will help with knowing if object is already retweeted or not on next click
     targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted
+
+    saveToStorage()
+    
     // This function will exectute the render function which will render the updated info to page. 
     render()
 }
@@ -89,7 +99,7 @@ function handleReplyClick(replyId) {
 function handleTweetBtnClick() {
     // this will store the tweet input text area into a variable. 
     const tweetInput = document.getElementById('tweet-input')
-
+    
     // If theres content inside the textarea it will run the following code:
     if (tweetInput.value) {
         // this will create a new object and push it to front of 
@@ -107,6 +117,9 @@ function handleTweetBtnClick() {
             uuid: uuidv4(),
             deletable: true,
         })
+
+        saveToStorage()
+
         // This will render the new object to the page. 
         render()
         // This will empty out the textarea field for a new tweet again. 
@@ -124,9 +137,16 @@ function handleDeleteClick(deleteID){
 
     // this will delete the object from the array, passing in the index of its location
     tweetsData.splice(indexOfObject, 1)
+
+    saveToStorage()
+    
     // This will render out the new page without deleted tweet. 
     render();
 
+}
+
+function saveToStorage(){
+    localStorage.setItem('tweets', JSON.stringify(tweetsData))
 }
 
 function getFeedHtml() {
