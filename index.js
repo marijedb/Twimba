@@ -1,4 +1,5 @@
 // COMING FEATURES/ BUG FIXES: 
+// refactor collapsing comment section on all sections. 
 // reply to a specific tweet
 // like, comment or retweet a comment
 import {tweetsData as tweets} from './data.js'
@@ -91,7 +92,7 @@ function handleRetweetClick(tweetId) {
     saveToStorage()
     
     // This function will exectute the render function which will render the updated info to page. 
-    // But first it checks if comment section is already visible, so it stays visible after like. 
+    // But first it checks if comment section is already visible, so it stays visible after retweet. 
     if(!document.getElementById(`replies-${tweetId}`).classList.contains('hidden')){
         render();
         document.getElementById(`replies-${tweetId}`).classList.remove('hidden')
