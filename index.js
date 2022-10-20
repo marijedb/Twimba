@@ -1,6 +1,5 @@
 // COMING FEATURES/ BUG FIXES: 
 // reply to a specific tweet
-// when liking a post and comments are expanded they need to stay expanded. 
 // like, comment or retweet a comment
 import {tweetsData as tweets} from './data.js'
 import {v4 as uuidv4} from 'https://jspm.dev/uuid';
@@ -60,7 +59,13 @@ function handleLikeClick(tweetId) {
     saveToStorage()
 
     // This function will exectute the render function which will render the updated info to page. 
-    render()
+    // But first it checks if comment section is already visible, so it stays visible after like. 
+    if(!document.getElementById(`replies-${tweetId}`).classList.contains('hidden')){
+        render();
+        document.getElementById(`replies-${tweetId}`).classList.remove('hidden')
+    } else {
+        render()
+    }
 }
 
 // This function gets the uuid passed in as parameter from the object of which retweet button is clicked. 
@@ -86,7 +91,13 @@ function handleRetweetClick(tweetId) {
     saveToStorage()
     
     // This function will exectute the render function which will render the updated info to page. 
-    render()
+    // But first it checks if comment section is already visible, so it stays visible after like. 
+    if(!document.getElementById(`replies-${tweetId}`).classList.contains('hidden')){
+        render();
+        document.getElementById(`replies-${tweetId}`).classList.remove('hidden')
+    } else {
+        render()
+    }
 }
 
 // This function gets the uuid passed in as parameter from the object of which reply button is clicked. 
